@@ -1,0 +1,42 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Aa]rtifacts/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# VS Code user/workspace state; keep shareable project configuration
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# Test and diagnostic output
+[Tt]est[Rr]esult*/
+*.coverage
+*.coveragexml
+*.trx
+*.dmp
+*.log
+
+# Publish and deployment output
+publish/
+*.publishsettings
+
+# Node / Tailwind
+node_modules/
+Frontend/wwwroot/css/tailwind.css
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+appsettings.*.Local.json

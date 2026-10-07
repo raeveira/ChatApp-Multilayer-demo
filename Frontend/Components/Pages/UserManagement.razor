@@ -1,0 +1,78 @@
+@page "/user-management"
+@rendermode InteractiveServer
+@using Application.Users
+@using Frontend.Components.Users
+@inject UserService UserService
+
+<h1 class="mb-4 text-3xl font-bold">User Management</h1>
+
+<div class="mb-4 flex items-center gap-2">
+    <button class="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700" @onclick="LoadUsersAsync">Load Users</button>
+    <button class="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700" @onclick="() => isCreatingUser = true">Create User</button>
+</div>
+
+<table class="w-full border-collapse text-left">
+    <thead>
+        <tr class="border-b-2 border-gray-300">
+            <th class="px-3 py-2">Username</th>
+            <th class="px-3 py-2">Email</th>
+            <th class="px-3 py-2">Created At</th>
+            <th class="px-3 py-2">Updated At</th>
+            <th class="px-3 py-2"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in users)
+        {
+            <tr class="border-b border-gray-200">
+                <td class="px-3 py-2">@user.Username</td>
+                <td class="px-3 py-2">@user.Email</td>
+                <td class="px-3 py-2">@user.CreatedAt</td>
+                <td class="px-3 py-2">@user.UpdatedAt</td>
+                <td class="px-3 py-2">
+                    <button class="rounded bg-blue-600 px-2 py-1 text-white hover:bg-blue-700" @onclick="() => EditUser(user)">Edit</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private bool isCreatingUser;
+    private bool isEditingUser;
+    private ShowUsersResponse? editingUser;
+    private List<ShowUsersResponse> users = new();
+    
+    protected override Task OnInitializedAsync() => LoadUsersAsync();
+
+    private async Task LoadUsersAsync() =>
+        users = (await UserService.GetAllAsync()).ToList();
+
+    private async Task OnUserCreatedAsync()
+    {
+        isCreatingUser = false;
+        await LoadUsersAsync();
+    }
+
+    private async Task OnUserUpdatedAsync()
+    {
+        isEditingUser = false;
+        await LoadUsersAsync();
+    }
+
+    private void EditUser(ShowUsersResponse user)
+    {
+        editingUser = user;
+        isEditingUser = true;
+    }
+}
+
+@if (isCreatingUser)
+{
+    <CreateUserDialog OnCreated="OnUserCreatedAsync" OnCancel="() => isCreatingUser = false" />
+}
+
+@if (isEditingUser && editingUser != null)
+{
+    <UpdateUserDialog User="editingUser" OnUpdated="OnUserUpdatedAsync" OnCancel="() => isEditingUser = false" />
+}
