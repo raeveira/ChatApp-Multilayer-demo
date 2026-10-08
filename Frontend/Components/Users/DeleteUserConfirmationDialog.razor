@@ -1,0 +1,43 @@
+@using Application.Users
+@inject UserService UserService
+
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+        <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Delete Account</h2>
+            <button type="button" class="text-2xl leading-none text-gray-500 hover:text-gray-800" @onclick="OnCancel">&times;</button>
+        </div>
+        <div class="mb-4">
+            <p>Are you sure you want to delete the account <span class="font-semibold">@User.Username</span>? This action cannot be undone.</p>
+        </div>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="mb-4 text-red-600">@errorMessage</div>
+        }
+        <div class="flex justify-end gap-2">
+            <button class="rounded bg-gray-200 px-4 py-2 hover:bg-gray-300" @onclick="OnCancel">Cancel</button>
+            <button class="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700" @onclick="SubmitAsync">Delete</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public ShowUsersResponse User { get; set; } = default!;
+    [Parameter] public EventCallback OnDeleted { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private string errorMessage = string.Empty;
+
+    private async Task SubmitAsync()
+    {
+        try
+        {
+            await UserService.DeleteAsync(User.Id);
+            await OnDeleted.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+}
