@@ -123,7 +123,7 @@
     <UpdateUserPasswordDialog User="passwordUser" OnUpdated="OnPasswordUpdatedAsync" OnCancel="() => isChangingPassword = false" />
 }
 
-    @if (isDeletingUser && deletingUser != null)
-    {
-        <DeleteUserConfirmationDialog User="deletingUser" OnDeleted="OnUserDeletedAsync" OnCancel="() => isDeletingUser = false" />
+@if (isDeletingUser && deletingUser != null)
+{
+    <DeleteUserConfirmationDialog User="deletingUser" OnDeleted="OnUserDeletedAsync" OnCancel="() => isDeletingUser = false" />
 }
