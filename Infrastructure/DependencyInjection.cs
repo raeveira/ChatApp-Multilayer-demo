@@ -6,6 +6,7 @@ namespace Infrastructure;
 
 public static class DependencyInjection
 {
+    //ExtensionMethod
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IGreetingRepository, InMemoryGreetingRepository>();
