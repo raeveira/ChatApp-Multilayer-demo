@@ -15,6 +15,10 @@
             <label for="email" class="mb-1 block text-sm font-medium">Email</label>
             <input type="email" id="email" class="@InputClass" @bind="email" />
         </div>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="mb-4 text-red-600">@errorMessage</div>
+        }
         <div class="flex justify-end gap-2">
             <button class="rounded bg-gray-200 px-4 py-2 hover:bg-gray-300" @onclick="OnCancel">Cancel</button>
             <button class="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700" @onclick="SubmitAsync">Save</button>
@@ -30,6 +34,7 @@
     [Parameter] public EventCallback OnUpdated { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
 
+    private string errorMessage = string.Empty;
     private string username = string.Empty;
     private string email = string.Empty;
 
@@ -41,7 +46,15 @@
 
     private async Task SubmitAsync()
     {
-        await UserService.UpdateAsync(new UpdateUserRequest(User.Id, username, email));
-        await OnUpdated.InvokeAsync();
+        try
+        {
+            await UserService.UpdateAsync(new UpdateUserRequest(User.Id, username, email));
+            await OnUpdated.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            // Handle the exception (e.g., show an error message)
+            errorMessage = ex.Message;
+        }
     }
 }
