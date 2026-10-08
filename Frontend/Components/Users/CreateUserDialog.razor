@@ -19,6 +19,10 @@
             <label for="password" class="mb-1 block text-sm font-medium">Password</label>
             <input type="password" id="password" class="@InputClass" @bind="password" />
         </div>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="mb-4 text-red-600">@errorMessage</div>
+        }
         <div class="flex justify-end gap-2">
             <button class="rounded bg-gray-200 px-4 py-2 hover:bg-gray-300" @onclick="OnCancel">Cancel</button>
             <button class="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700" @onclick="SubmitAsync">Submit</button>
@@ -33,13 +37,22 @@
     [Parameter] public EventCallback OnCreated { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
 
+    private string errorMessage = string.Empty;
     private string username = string.Empty;
     private string email = string.Empty;
     private string password = string.Empty;
 
     private async Task SubmitAsync()
     {
-        await UserService.AddAsync(new CreateUserRequest(username, email, password));
-        await OnCreated.InvokeAsync();
+        try
+        {
+            await UserService.AddAsync(new CreateUserRequest(username, email, password));
+            await OnCreated.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            // Handle the exception (e.g., show an error message)
+            errorMessage = ex.Message;
+        }
     }
 }
