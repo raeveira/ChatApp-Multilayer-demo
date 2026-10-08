@@ -31,7 +31,9 @@
                 <td class="px-3 py-2">@user.UpdatedAt</td>
                 <td class="px-3 py-2">
                     <button class="rounded bg-blue-600 px-2 py-1 text-white hover:bg-blue-700" @onclick="() => EditUser(user)">Edit</button>
-                </td>
+                    <button class="ml-2 rounded bg-amber-600 px-2 py-1 text-white hover:bg-amber-700" @onclick="() => ChangeUserPassword(user)">Change Password</button>
+                                        <button class="ml-2 rounded bg-red-600 px-2 py-1 text-white hover:bg-red-700" @onclick="() => ConfirmDeleteUser(user)">Delete</button>
+                                    </td>
             </tr>
         }
     </tbody>
@@ -40,7 +42,11 @@
 @code {
     private bool isCreatingUser;
     private bool isEditingUser;
+    private bool isChangingPassword;
+    private bool isDeletingUser;
     private ShowUsersResponse? editingUser;
+    private ShowUsersResponse? passwordUser;
+    private ShowUsersResponse? deletingUser;
     private List<ShowUsersResponse> users = new();
     
     protected override Task OnInitializedAsync() => LoadUsersAsync();
@@ -60,10 +66,34 @@
         await LoadUsersAsync();
     }
 
+    private async Task OnPasswordUpdatedAsync()
+    {
+        isChangingPassword = false;
+        await LoadUsersAsync();
+    }
+
+    private async Task OnUserDeletedAsync()
+    {
+        isDeletingUser = false;
+        await LoadUsersAsync();
+    }
+
+    private void ConfirmDeleteUser(ShowUsersResponse user)
+    {
+        deletingUser = user;
+        isDeletingUser = true;
+    }
+
     private void EditUser(ShowUsersResponse user)
     {
         editingUser = user;
         isEditingUser = true;
+    }
+
+    private void ChangeUserPassword(ShowUsersResponse user)
+    {
+        passwordUser = user;
+        isChangingPassword = true;
     }
 }
 
@@ -76,3 +106,13 @@
 {
     <UpdateUserDialog User="editingUser" OnUpdated="OnUserUpdatedAsync" OnCancel="() => isEditingUser = false" />
 }
+
+@if (isChangingPassword && passwordUser != null)
+{
+    <UpdateUserPasswordDialog User="passwordUser" OnUpdated="OnPasswordUpdatedAsync" OnCancel="() => isChangingPassword = false" />
+}
+
+    @if (isDeletingUser && deletingUser != null)
+    {
+        <DeleteUserConfirmationDialog User="deletingUser" OnDeleted="OnUserDeletedAsync" OnCancel="() => isDeletingUser = false" />
+    }
