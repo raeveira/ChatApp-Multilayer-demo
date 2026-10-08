@@ -10,7 +10,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IGreetingRepository, InMemoryGreetingRepository>();
         services.AddSingleton<IUserRepository, InMemoryUserRepository>();
-        
+
         return services;
     }
 }
