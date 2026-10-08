@@ -9,7 +9,7 @@ public static class DependencyInjection
     {
         services.AddScoped<GreetingService>();
         services.AddScoped<UserService>();
-        services.AddSingleton<PasswordHasher>();
+        services.AddTransient<PasswordHasher>();
         return services;
     }
 }
