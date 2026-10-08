@@ -12,7 +12,7 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
-  <Target Name="BuildTailwind" BeforeTargets="BeforeBuild" Inputs="Styles\tailwind.css;@(Content);@(None)" Outputs="wwwroot\css\tailwind.css">
+  <Target Name="BuildTailwind" BeforeTargets="BeforeBuild" Inputs="Styles\tailwind.css;@(Content);@(None);@(RazorComponent)" Outputs="wwwroot\css\tailwind.css">
     <Exec Command="npm install" WorkingDirectory="$(MSBuildProjectDirectory)" Condition="!Exists('$(MSBuildProjectDirectory)\node_modules')" />
     <Exec Command="npm run css:build" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
