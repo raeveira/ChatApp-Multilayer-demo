@@ -4,6 +4,7 @@ using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add application and infrastructure services to the dependency injection container.
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
 

@@ -14,11 +14,12 @@ public class UserService
 
     public Task<User?> GetByIdAsync(Guid id) => _userRepository.GetByIdAsync(id);
     public Task<IEnumerable<ShowUsersResponse>> GetAllAsync() => _userRepository.GetAllAsync();
+    public Task<User?> GetByUsernameAsync(string username) => _userRepository.GetByUsernameAsync(username);
 
     public async Task AddAsync(CreateUserRequest user)
     {
         // Check if username already exists
-        var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
+        var existingUser = await GetByUsernameAsync(user.Username);
         if (existingUser != null)
             throw new InvalidOperationException("Username already exists.");
 
@@ -37,7 +38,7 @@ public class UserService
 
     public async Task UpdateAsync(UpdateUserRequest request)
     {
-        User? user = await _userRepository.GetByIdAsync(request.Id)
+        User? user = await GetByIdAsync(request.Id)
             ?? throw new InvalidOperationException("User not found.");
 
         var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
@@ -53,7 +54,7 @@ public class UserService
 
     public async Task ChangePasswordAsync(ChangePasswordRequest request)
     {
-        var user = await _userRepository.GetByIdAsync(request.Id)
+        var user = await GetByIdAsync(request.Id)
             ?? throw new InvalidOperationException("User not found.");
 
         if (!_passwordHasher.Verify(request.OldPassword, user.PasswordHash))
